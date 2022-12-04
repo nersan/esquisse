@@ -79,16 +79,20 @@ class App(tk.Frame):
         self.create_flame_button.place(x=655, y=0)
 
         #　重ねるボタン
-        self.create_flame_button = tk.Button(self, text='重ねる', command=self.overlap)
-        self.create_flame_button.place(x=765, y=0)
+        self.overlap_button = tk.Button(self, text='重ねる', command=self.overlap)
+        self.overlap_button.place(x=875, y=0)
 
         #　階段ボタン
-        self.create_flame_button = tk.Button(self, text='階段', command=self.stairs)
-        self.create_flame_button.place(x=820, y=0)
+        self.stairs_button = tk.Button(self, text='階段', command=self.stairs)
+        self.stairs_button.place(x=765, y=0)
 
         #　整理ボタン
-        self.create_flame_button = tk.Button(self, text='整理', command=self.sort_stairs)
-        self.create_flame_button.place(x=875, y=0)
+        self.sort_stairs_button = tk.Button(self, text='整理', command=self.sort_stairs)
+        self.sort_stairs_button.place(x=820, y=0)
+
+        #　ストレッチボタン
+        self.stretch_button = tk.Button(self, text='ストレッチ', command=self.stretch)
+        self.stretch_button.place(x=930, y=0)
 
         self.canvas.grid(row=1, column=0, columnspan=4)
         #　楕円リスト
@@ -97,12 +101,14 @@ class App(tk.Frame):
         # 部屋リスト
         self.room = []
         self.room2 = []
+        self.room3 = []
 
         # 外枠の生成時の採用楕円
         self.oval_flame_creation = []
 
         #　外枠リスト
         self.flame = []
+        self.flame2 = []
 
         #　整理する前の階段リスト
         self.stairs = []
@@ -116,6 +122,53 @@ class App(tk.Frame):
         #　FlameクラスとAppクラスのキャンバスの統合
         Flame.canvas = self.canvas
     
+
+    #　ストレッチボタンが押された時
+    def stretch(self):
+        start_x1 = self.flame[0].start_x 
+        start_y1 = self.flame[0].start_y
+        end_x1 = self.flame[0].end_x
+        end_y1 = self.flame[0].end_y
+        start_x2 = self.flame2[0].start_x
+        start_y2 = self.flame2[0].start_y
+        end_x2 = self.flame2[0].end_x
+        end_y2 = self.flame2[0].end_y
+        # start_x3 = 1
+        # start_y3 = 1
+        # end_x3 = 1
+        # end_y3 = 1
+
+
+        if abs(start_x1 - start_x2) == MODULE:
+            start_x2 = start_x1
+        if abs(start_y1 - start_y2) == MODULE:
+            start_y2 = start_y1
+        if abs(end_x1 - end_x2) == MODULE:
+            end_x2 = end_x1
+        if abs(end_y1 - end_y2) == MODULE:
+            end_y2 = end_y1
+
+        # for room in self.room3:
+        #     if abs(start_x1 - room.start_x) == MODULE:
+        #         start_x3 = start_x1
+        #     if abs(start_y1 - room.start_y) == MODULE:
+        #         start_y3 = start_y1
+        #     if abs(end_x1 - room.end_x) == MODULE:
+        #         end_x3 = end_x1
+        #     if abs(end_y1 - room.end_y) == MODULE:
+        #         end_y3 = end_y1
+
+            # self.canvas.delete(room.id)
+
+
+        stretch_flame = Flame(start_x2, start_y2, end_x2, end_y2, 'red', 3)
+        # stretch_room = Flame(start_x3, start_y3, end_x3, end_y3 , 'red', 3)
+        self.canvas.delete(self.flame2[0])
+
+
+        
+
+
     #　階段ボタンが押された時
     def stairs(self):
         self.canvas.bind(sequence='<1>', func = self.create_stairs)
@@ -167,13 +220,15 @@ class App(tk.Frame):
         end_x = (self.flame[1].end_x - self.stairs2[1].start_x  + self.stairs2[0].start_x)
         end_y = (self.flame[1].end_y - self.stairs2[1].start_y + self.stairs2[0].start_y)
         fla = Flame(start_x, start_y, end_x, end_y, 'green', 3)
-        # self.flame.append(fla) 
+        self.flame2.append(fla) 
         for ro in self.room2:
             start_x2 = (ro.start_x - self.stairs2[1].start_x  + self.stairs2[0].start_x)
             start_y2 = (ro.start_y - self.stairs2[1].start_y + self.stairs2[0].start_y)
             end_x2 = (ro.end_x - self.stairs2[1].start_x  + self.stairs2[0].start_x)
             end_y2 = (ro.end_y - self.stairs2[1].start_y + self.stairs2[0].start_y)
             roo = Flame(start_x2, start_y2, end_x2, end_y2, 'green', 3)
+            self.room3.append(roo)
+
 
     # 外枠ボタンが押されたとき
     def create_flame(self):
@@ -220,7 +275,7 @@ class App(tk.Frame):
                 self.room.append(room)
             elif ov.start_x > 560:
                 self.room2.append(room)
-            # self.room.append(room)
+
             self.canvas.delete(ov.id)
 
     #　面積，縦横比の値を更新   
