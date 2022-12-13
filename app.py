@@ -133,40 +133,19 @@ class App(tk.Frame):
         start_y2 = self.flame2[0].start_y
         end_x2 = self.flame2[0].end_x
         end_y2 = self.flame2[0].end_y
-        # start_x3 = 1
-        # start_y3 = 1
-        # end_x3 = 1
-        # end_y3 = 1
+        difference_start_x = start_x2 - start_x1
+        difference_start_y = start_y2 - start_y1
+        difference_end_x = end_x2 - end_x1
+        difference_end_y = end_y2 - end_y1
+        for ro in self.room3:
+            start_x3 = ro.start_x - difference_start_x
+            start_y3 = ro.start_y - difference_start_y
+            end_x3 = ro.end_x - difference_end_x
+            end_y3 = ro.end_y - difference_end_y
+            room3 = Flame(start_x3, start_y3, end_x3, end_y3, 'red', 3)
 
-
-        if abs(start_x1 - start_x2) == MODULE:
-            start_x2 = start_x1
-        if abs(start_y1 - start_y2) == MODULE:
-            start_y2 = start_y1
-        if abs(end_x1 - end_x2) == MODULE:
-            end_x2 = end_x1
-        if abs(end_y1 - end_y2) == MODULE:
-            end_y2 = end_y1
-
-        # for room in self.room3:
-        #     if abs(start_x1 - room.start_x) == MODULE:
-        #         start_x3 = start_x1
-        #     if abs(start_y1 - room.start_y) == MODULE:
-        #         start_y3 = start_y1
-        #     if abs(end_x1 - room.end_x) == MODULE:
-        #         end_x3 = end_x1
-        #     if abs(end_y1 - room.end_y) == MODULE:
-        #         end_y3 = end_y1
-
-            # self.canvas.delete(room.id)
-
-
-        stretch_flame = Flame(start_x2, start_y2, end_x2, end_y2, 'red', 3)
-        # stretch_room = Flame(start_x3, start_y3, end_x3, end_y3 , 'red', 3)
-        self.canvas.delete(self.flame2[0])
-
-
-        
+            self.canvas.delete(ro.id)
+        self.canvas.delete(self.flame2[0].id)
 
 
     #　階段ボタンが押された時
