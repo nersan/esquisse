@@ -9,6 +9,7 @@ MAGNIFICATION = 2500
 OVAL_QUANTITY_LIMIT = 100
 IS_MOVING = False   # 楕円が移動中かどうか(移動中: True, 楕円作っている: False)
 MODULE = 45 # 90cm
+DIFFERENCE = 675
 
 class App(tk.Frame):
     def __init__(self, master=None):
@@ -94,6 +95,10 @@ class App(tk.Frame):
         self.stretch_button = tk.Button(self, text='ストレッチ', command=self.stretch)
         self.stretch_button.place(x=930, y=0)
 
+        #　最終ボタン
+        self.last_button = tk.Button(self, text='最終', command=self.last)
+        self.last_button.place(x=985, y=0)
+
         self.canvas.grid(row=1, column=0, columnspan=4)
         #　楕円リスト
         self.oval = []
@@ -102,6 +107,8 @@ class App(tk.Frame):
         self.room = []
         self.room2 = []
         self.room3 = []
+        self.room4 = []
+        self.room5 = []
 
         # 外枠の生成時の採用楕円
         self.oval_flame_creation = []
@@ -123,7 +130,45 @@ class App(tk.Frame):
         Flame.canvas = self.canvas
     
 
-    #　ストレッチボタンが押された時
+    #　最終ボタンが押された時、１階と２階の最終的な平面図をシンプルに見せる
+    def last(self):
+        for i in self.room2:
+            self.canvas.delete(i.id)
+        for u in self.room4:
+            self.canvas.delete(u.id)
+        self.canvas.delete(self.stairs2[1].id)
+        self.canvas.delete(self.flame[1].id)
+        
+        
+        for e in self.room4:
+            start_x = e.start_x + DIFFERENCE
+            start_y = e.start_y
+            end_x = e.end_x + DIFFERENCE
+            end_y = e.end_y
+            room = Flame(start_x, start_y, end_x, end_y, 'black', 5)
+            self.room5.append(room)
+        
+        s_x = self.stairs2[0].start_x + DIFFERENCE
+        s_y = self.stairs2[0].start_y
+        e_x = self.stairs2[0].end_x + DIFFERENCE
+        e_y = self.stairs2[0].end_y
+        stairs = Flame(s_x, s_y, e_x, e_y, 'blue', 5)
+
+        left_most = None
+        right_most = None
+        up_most = None
+        down_most = None
+        for a in self.room5:
+            left_most = a.start_x if left_most is None or a.start_x < left_most else left_most
+            right_most = a.end_x if right_most is None or a.end_x > right_most else right_most
+            up_most = a.start_y if up_most is None or a.start_y < up_most else up_most
+            down_most = a.end_y if down_most is None or a.end_y > down_most else down_most
+        flame = Flame(left_most, up_most, right_most, down_most, 'black', 5)
+
+        pass
+
+
+    #　ストレッチボタンが押された時、重ねた部屋の大きさを合わせる、２階を１階に合わせる
     def stretch(self):
         start_x1 = self.flame[0].start_x 
         start_y1 = self.flame[0].start_y
@@ -133,7 +178,7 @@ class App(tk.Frame):
         start_y2 = self.flame2[0].start_y
         end_x2 = self.flame2[0].end_x
         end_y2 = self.flame2[0].end_y
-        difference_start_x = start_x2 - start_x1
+        difference_start_x = start_x2 - start_x1 #x座標の外枠の差
         difference_start_y = start_y2 - start_y1
         difference_end_x = end_x2 - end_x1
         difference_end_y = end_y2 - end_y1
@@ -142,9 +187,11 @@ class App(tk.Frame):
             start_y3 = ro.start_y - difference_start_y
             end_x3 = ro.end_x - difference_end_x
             end_y3 = ro.end_y - difference_end_y
-            room3 = Flame(start_x3, start_y3, end_x3, end_y3, 'red', 3)
+            room3 = Flame(start_x3, start_y3, end_x3, end_y3, 'red', 2)
+            self.room4.append(room3)
 
             self.canvas.delete(ro.id)
+
         self.canvas.delete(self.flame2[0].id)
 
 
