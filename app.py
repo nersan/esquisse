@@ -183,10 +183,23 @@ class App(tk.Frame):
         difference_end_x = end_x2 - end_x1
         difference_end_y = end_y2 - end_y1
         for ro in self.room3:
-            start_x3 = ro.start_x - difference_start_x
-            start_y3 = ro.start_y - difference_start_y
-            end_x3 = ro.end_x - difference_end_x
-            end_y3 = ro.end_y - difference_end_y
+            if ro.start_x == start_x1:
+                start_x3 = start_x1
+            else:
+                start_x3 = ro.start_x - difference_start_x - difference_end_x
+            if ro.start_y == start_y1:
+                start_y3 = start_y1
+            else:
+                start_y3 = ro.start_y - difference_start_y - difference_end_y
+            if ro.end_x == end_x1:
+                end_x3 = end_x1
+            else:
+                end_x3 = ro.end_x - difference_end_x - difference_start_x
+            if ro.end_y == end_y1:
+                end_y3 = end_y1
+            else:
+                end_y3 = ro.end_y - difference_end_y - difference_start_y
+            
             room3 = Flame(start_x3, start_y3, end_x3, end_y3, 'red', 2)
             self.room4.append(room3)
 
